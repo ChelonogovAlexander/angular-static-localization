@@ -7,11 +7,13 @@ import { StaticLocalizationService } from './shared/static-localization.service'
 import { CultureService } from './shared/culture-service';
 import { CookieProviderService } from './shared/cookie-provider.service';
 import { CookieService } from 'ngx-cookie-service';
+import { LanguageSelectorComponent } from './language-selector/language-selector.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LanguageSelectorComponent
   ],
   imports: [
     BrowserModule
