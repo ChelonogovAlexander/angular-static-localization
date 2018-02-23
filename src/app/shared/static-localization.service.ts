@@ -8,6 +8,7 @@ import * as translation_de from 'app/translations/translation_de.json';
 import * as translation_fr from 'app/translations/translation_fr.json';
 import { CultureService } from './culture-service';
 import { Culture } from './culture';
+import { Observable } from 'rxjs/Observable';
 
 /**
  * Сервис для перевода статического контента
@@ -19,28 +20,27 @@ export class StaticLocalizationService {
 
   constructor(private cultureService: CultureService) {
     this.resources = new BehaviorSubject(this.defaultLocale);
-    this.initTranslationDictionary();
+
+    const culture = this.cultureService.getCurrentCulture();
+    this.initTranslationDictionary(culture);
   }
 
   /**
  * Получить ресурсы перевода статического контента
  */
-  public getTranslatableResources(): Subject<any> {
-    return this.resources;
+  public getTranslatableResources(): Observable<any> {
+    return this.resources.asObservable();
   }
 
-  private initTranslationDictionary(): any {
-    let dictionary = this.getTranslationDictionary();
+  public initTranslationDictionary(culture: Culture): any {
+    const dictionary = this.getTranslationDictionary(culture);
     this.resources.next(dictionary);
     }
 
   /**
    * Метод для получения словарей локализации
    */
-  private getTranslationDictionary(): any {
-
-    let culture = this.cultureService.getCurrentCulture();
-
+  private getTranslationDictionary(culture: Culture): any {
     switch (culture) {
       case Culture.Russian:
         return translation_ru;
@@ -50,7 +50,7 @@ export class StaticLocalizationService {
 
       case Culture.German:
         return translation_de;
-  
+
       case Culture.French:
         return translation_fr;
 

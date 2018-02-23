@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StaticLocalizationService } from './shared/static-localization.service';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private translateSubscription: Subscription;
-  public resources: any;
+  public resources: Observable<any>;
 
   title = 'app';
 
@@ -18,12 +19,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.translateSubscription = this.staticLocalizationService
-    .getTranslatableResources()
-    .subscribe(resources => (this.resources = resources));
+    this.resources = this.staticLocalizationService.getTranslatableResources();
   }
 
   ngOnDestroy() {
-    this.translateSubscription.unsubscribe();
   }
 }

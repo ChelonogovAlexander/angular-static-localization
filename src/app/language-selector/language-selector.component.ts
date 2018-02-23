@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Culture } from './../shared/culture';
+import { CultureService } from '../shared/culture-service';
 
 @Component({
   selector: 'app-language-selector',
@@ -22,13 +23,18 @@ export class LanguageSelectorComponent implements OnInit {
   name: 'French'
 }];
 
-  constructor() { }
+public currentCulture: Culture;
+
+  constructor(private cultureService: CultureService) {
+  }
 
   ngOnInit() {
+    this.currentCulture = this.cultureService.getCurrentCulture();
   }
 
   public onChangeLanguage(newValue: number) {
     console.log(newValue);
-    // let culture = Culture[newValue];
+    const culture = Culture[Culture[newValue]];
+    this.cultureService.changeCurrentCulture(culture);
   }
 }
