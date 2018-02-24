@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Culture } from './culture';
+import { Observable } from 'rxjs/Observable';
+import { CookieService } from 'ngx-cookie-service';
 
 import * as translation_ru from 'app/translations/translation_ru.json';
 import * as translation_en from 'app/translations/translation_en.json';
 import * as translation_de from 'app/translations/translation_de.json';
 import * as translation_fr from 'app/translations/translation_fr.json';
-import { Culture } from './culture';
-import { Observable } from 'rxjs/Observable';
-import { CookieService } from 'ngx-cookie-service';
 
 /**
  * Сервис для перевода статического контента
@@ -66,12 +66,12 @@ export class StaticLocalizationService {
   /**
  * Получить ресурсы перевода статического контента
  */
-  public getTranslatableResources(): Observable<any> {
+  public getTranslatableResources(): Observable<Resourses> {
     return this.resources.asObservable();
   }
 
-  private initTranslationDictionary(culture: Culture): any {
-    const dictionary = this.getTranslationDictionary(culture);
+  private initTranslationDictionary(culture: Culture): void {
+    const dictionary = this.getTranslationDictionary(culture) as Resourses;
     this.resources.next(dictionary);
     }
 
@@ -97,4 +97,3 @@ export class StaticLocalizationService {
     }
   }
 }
-

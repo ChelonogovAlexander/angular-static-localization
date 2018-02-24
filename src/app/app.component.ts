@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private resourcesSubscription: Subscription;
-  public resources: any;
+  public resources: Resourses;
 
   title = 'app';
 
