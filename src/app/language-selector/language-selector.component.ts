@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Culture } from './../shared/culture';
-import { CultureService } from '../shared/culture-service';
+import { StaticLocalizationService } from '../shared/static-localization.service';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-language-selector',
@@ -8,7 +10,6 @@ import { CultureService } from '../shared/culture-service';
   styleUrls: ['./language-selector.component.css']
 })
 export class LanguageSelectorComponent implements OnInit {
-
   public languages = [{
     value: Culture.Russian,
     name: 'Русский'
@@ -25,16 +26,15 @@ export class LanguageSelectorComponent implements OnInit {
 
 public currentCulture: Culture;
 
-  constructor(private cultureService: CultureService) {
+  constructor(private staticLocalizationService: StaticLocalizationService) {
   }
 
   ngOnInit() {
-    this.currentCulture = this.cultureService.getCurrentCulture();
+    this.currentCulture = this.staticLocalizationService.getCurrentCulture();
   }
 
   public onChangeLanguage(newValue: number) {
-    console.log(newValue);
     const culture = Culture[Culture[newValue]];
-    this.cultureService.changeCurrentCulture(culture);
+    this.staticLocalizationService.changeCurrentCulture(culture);
   }
 }

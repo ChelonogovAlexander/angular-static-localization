@@ -10,8 +10,8 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private translateSubscription: Subscription;
-  public resources: Observable<any>;
+  private resourcesSubscription: Subscription;
+  public resources: any;
 
   title = 'app';
 
@@ -19,9 +19,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.resources = this.staticLocalizationService.getTranslatableResources();
+    this.staticLocalizationService.getTranslatableResources().subscribe(r => this.resources = r);
   }
 
   ngOnDestroy() {
+    this.resourcesSubscription.unsubscribe();
   }
 }

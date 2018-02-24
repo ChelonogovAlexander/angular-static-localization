@@ -6,9 +6,9 @@ import * as translation_ru from 'app/translations/translation_ru.json';
 import * as translation_en from 'app/translations/translation_en.json';
 import * as translation_de from 'app/translations/translation_de.json';
 import * as translation_fr from 'app/translations/translation_fr.json';
-import { CultureService } from './culture-service';
 import { Culture } from './culture';
 import { Observable } from 'rxjs/Observable';
+import { CookieService } from 'ngx-cookie-service';
 
 /**
  * Сервис для перевода статического контента
@@ -16,14 +16,52 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class StaticLocalizationService {
   private resources: BehaviorSubject<any>;
-  private defaultLocale: any = translation_en;
+  private behaviourSubject: BehaviorSubject<Culture>;
+  private defaultDictionary: any;
+  private defaultCulture: Culture;
 
-  constructor(private cultureService: CultureService) {
-    this.resources = new BehaviorSubject(this.defaultLocale);
+  private cookieName = 'CurrentLocale';
 
-    const culture = this.cultureService.getCurrentCulture();
+  constructor(private cookieService: CookieService) {
+    this.defaultCulture = Culture.English;
+    this.defaultDictionary = translation_en;
+
+    const initialCulture = this.getCurrentCulture();
+    this.behaviourSubject = new BehaviorSubject(initialCulture);
+    this.resources = new BehaviorSubject(this.defaultDictionary);
+
+    const culture = this.getCurrentCulture();
     this.initTranslationDictionary(culture);
   }
+
+  /**
+  * Сменить текущую культуру
+  */
+   public changeCurrentCulture(culture: Culture): void {
+     this.behaviourSubject.next(culture);
+     this.initTranslationDictionary(culture);
+
+     this.cookieService.set('CurrentLocale', Culture[culture]);
+   }
+
+   /**
+  * Получить текущую культуру
+  */
+   public getCurrentCulture(): Culture {
+     const locale = this.cookieService.get('CurrentLocale');
+
+     if (!locale) {
+         return this.defaultCulture;
+   }
+
+   const result = Culture[locale];
+
+   if (result) {
+     return result;
+    }
+
+   return this.defaultCulture;
+ }
 
   /**
  * Получить ресурсы перевода статического контента
@@ -32,7 +70,7 @@ export class StaticLocalizationService {
     return this.resources.asObservable();
   }
 
-  public initTranslationDictionary(culture: Culture): any {
+  private initTranslationDictionary(culture: Culture): any {
     const dictionary = this.getTranslationDictionary(culture);
     this.resources.next(dictionary);
     }
@@ -55,7 +93,7 @@ export class StaticLocalizationService {
         return translation_fr;
 
       default:
-        return this.defaultLocale;
+        return this.defaultDictionary;
     }
   }
 }
