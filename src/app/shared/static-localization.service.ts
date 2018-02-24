@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Culture } from './culture';
 import { Observable } from 'rxjs/Observable';
-import { CookieService } from 'ngx-cookie-service';
+import { CookieProviderService } from './cookie-provider.service';
 
 import * as translation_ru from 'app/translations/translation_ru.json';
 import * as translation_en from 'app/translations/translation_en.json';
@@ -22,7 +22,7 @@ export class StaticLocalizationService {
 
   private cookieName = 'CurrentLocale';
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieProviderService) {
     this.defaultCulture = Culture.English;
     this.defaultDictionary = translation_en;
 
@@ -41,14 +41,14 @@ export class StaticLocalizationService {
      this.behaviourSubject.next(culture);
      this.initTranslationDictionary(culture);
 
-     this.cookieService.set('CurrentLocale', Culture[culture]);
+     this.cookieService.put(this.cookieName, Culture[culture]);
    }
 
    /**
   * Получить текущую культуру
   */
    public getCurrentCulture(): Culture {
-     const locale = this.cookieService.get('CurrentLocale');
+     const locale = this.cookieService.get(this.cookieName);
 
      if (!locale) {
          return this.defaultCulture;
